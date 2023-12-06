@@ -52,16 +52,16 @@ func (s *Service) Run() error {
 func (s *Service) process(data []string) []string {
 	var wg sync.WaitGroup
 	maxRoutineCount := 10
-
 	resultData := make([]string, 0, cap(data))
 	results := make(chan string, maxRoutineCount)
 
-	for i := range data {
+	for rowIndex := range data {
 		wg.Add(1)
-		go func(i int) {
+
+		go func(rowIndex int) {
 			defer wg.Done()
-			results <- s.maskingURL(data[i])
-		}(i)
+			results <- s.maskingURL(data[rowIndex])
+		}(rowIndex)
 	}
 
 	go func() {
