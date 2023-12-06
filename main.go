@@ -23,6 +23,7 @@ func main() {
 	switch len(paths) {
 	case zeroArgs:
 		slog.Error("Params not provided")
+
 		return
 
 	case oneArg:
