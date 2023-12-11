@@ -2,7 +2,6 @@ package maskerspam
 
 import (
 	"fmt"
-	"sync"
 )
 
 type producer interface {
@@ -50,30 +49,34 @@ func (s *Service) Run() error {
 }
 
 func (s *Service) process(data []string) []string {
-	var wg sync.WaitGroup
 	maxRoutineCount := 10
 	resultData := make([]string, 0, cap(data))
-	results := make(chan string, maxRoutineCount)
+	tasks := make(chan string)
+	results := make(chan string)
 
-	for rowIndex := range data {
-		wg.Add(1)
-
-		go func(rowIndex int) {
-			defer wg.Done()
-			results <- s.maskingURL(data[rowIndex])
-		}(rowIndex)
+	for routineIndex := 0; routineIndex < maxRoutineCount; routineIndex++ {
+		go s.worker(tasks, results)
 	}
 
 	go func() {
-		wg.Wait()
-		close(results)
+		for _, task := range data {
+			tasks <- task
+		}
+		close(tasks)
 	}()
 
-	for result := range results {
-		resultData = append(resultData, result)
+	for rowIndex := 0; rowIndex < len(data); rowIndex++ {
+		resultData = append(resultData, <-results)
 	}
+	close(results)
 
 	return resultData
+}
+
+func (s *Service) worker(tasks <-chan string, result chan<- string) {
+	for task := range tasks {
+		result <- s.maskingURL(task)
+	}
 }
 
 func (s *Service) maskingURL(str string) string {
