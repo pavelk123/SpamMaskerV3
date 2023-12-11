@@ -62,6 +62,7 @@ func (s *Service) process(data []string) []string {
 		for _, task := range data {
 			tasks <- task
 		}
+
 		close(tasks)
 	}()
 
