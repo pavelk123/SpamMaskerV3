@@ -10,13 +10,11 @@ import (
 )
 
 // FileProducer - for data produce unit.
-
 type FileProducer struct {
 	inputFile string
 }
 
 // NewFileProducer is constructor of FileProducer
-
 func NewFileProducer(inputFile string) *FileProducer {
 	return &FileProducer{inputFile: inputFile}
 }

@@ -9,15 +9,12 @@ import (
 const defaultPath string = "./test/output.txt"
 
 // FilePresenter - for data presenter unit.
-
 type FilePresenter struct {
 	outputFile string
 }
 
 // NewFilePresenter is constructor of FilePresenter
-
 // If path for output file is empty, then output file will be default
-
 func NewFilePresenter(outputFile string) *FilePresenter {
 	if outputFile == "" {
 		outputFile = defaultPath

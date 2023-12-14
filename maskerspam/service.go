@@ -16,14 +16,12 @@ type presenter interface {
 // Including inside 2 fields:
 // producer - for data provider unit
 // presenter - for data presenter unit.
-
 type Service struct {
 	prod producer
 	pres presenter
 }
 
 // NewService is constructor of Service
-
 func NewService(prod producer, pres presenter) *Service {
 	return &Service{
 		prod: prod,
@@ -32,7 +30,6 @@ func NewService(prod producer, pres presenter) *Service {
 }
 
 // Run is method for start Service working
-
 func (s *Service) Run() error {
 	data, err := s.prod.produce()
 	if err != nil {
@@ -49,12 +46,12 @@ func (s *Service) Run() error {
 }
 
 func (s *Service) process(data []string) []string {
-	maxRoutineCount := 10
+	const maxRoutineCount = 10
 	resultData := make([]string, 0, cap(data))
 	tasks := make(chan string)
 	results := make(chan string)
 
-	for routineIndex := 0; routineIndex < maxRoutineCount; routineIndex++ {
+	for i := 0; i < maxRoutineCount; i++ {
 		go s.worker(tasks, results)
 	}
 
